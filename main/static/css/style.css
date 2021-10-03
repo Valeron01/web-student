@@ -1,0 +1,53 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body, .layout, #root {
+    width: 100%;
+    height: 100%;
+}
+
+.wrapper {
+    max-width: 80%;
+    margin: 0 auto;
+}
+
+.dialog {
+    width: 300px;
+
+    position: absolute;
+    top: auto;
+    bottom: auto;
+    left: 50%;
+    top: 50%;
+    margin: -150px;
+
+    background-color: #ccc;
+    padding: 15px;
+    border-radius: 5px;
+    z-index: 100;
+}
+
+.dialog__inner {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.dialog__form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.dialog__text-field {
+    padding: 5px;
+    margin: 5px 0;
+}
+.dialog__button {
+    padding: 5px;
+    border-radius: 3px;
+}
