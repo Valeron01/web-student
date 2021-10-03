@@ -35,5 +35,5 @@ def auth(request:HttpRequest):
     
 def profile(request:HttpRequest):
     if request.method == 'GET':
-        return render(request, 'profile.html')
+        return render(request, '_profile.html')
     return HttpResponse('wrong request')

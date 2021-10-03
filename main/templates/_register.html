@@ -2,11 +2,21 @@
 <div id="auth" class="dialog">
     <div class="dialog__inner dialog-wrapper">
         <h3 class="dialog__title">Регистрация</h3>
-        <form class="dialog__form" action="/auth" method="post">
-            <input class="dialog__text-field" type="text" placeholder="email">
-            <input class="dialog__text-field" type="password" placeholder="пароль">
+        <form class="dialog__form" action="/register" method="post">
+            {% csrf_token %}
+            <input class="dialog__text-field" type="text" placeholder="Фамилия" name="lastName">
+            <input class="dialog__text-field" type="text" placeholder="Имя" name="firstName">
+            <input class="dialog__text-field" type="text" placeholder="Отчество" name="patronymic">
+            <input id="student-number" class="dialog__text-field" type="text" placeholder="номер зачетки" name="studentCode">
+            <div class="dialog__checkbox">
+                <input id="isTeacherCheckbox" class="dialog__text-field" type="checkbox" name="isTeacher" onchange="checkboxHandler(event)">
+                <label for="isTeacher">Преподаватель</label>
+            </div>
+            <input class="dialog__text-field" type="email" placeholder="email" name="email">
+            <input class="dialog__text-field" type="password" placeholder="пароль" name="password">
             <input class="dialog__text-field" type="password" placeholder="подтвердите пароль">
             <button class="dialog__button">Продолжить</button>
         </form>
+        <a href="/auth">Вход</a>
     </div>
 </div>
