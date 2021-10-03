@@ -6,10 +6,10 @@ window.onload = function() {
 // Проверка авторизации
 async function init() {
     await changePage('/register');
-
-    bindQueriesForLinks();
 }
 
+// Изменение стандарного поведения ссылок 
+// Переход по ссылке
 function bindQueriesForLinks() {
     $('a')
     .on('click', function (e) { 
@@ -27,6 +27,24 @@ async function changePage(url) {
     })
     .done((html) => {
         $("#root").html(html);
+        bindQueriesForLinks();
+        setLocation(url);
     });
 }
 
+//Фунция изменяет адресную строку
+function setLocation(curLoc) {
+    try {
+      history.pushState(null, null, curLoc);
+      return;
+    } catch(e) {}
+    location.hash = '#' + curLoc;
+}
+
+function checkboxHandler(event) {
+    if (event.target.checked) {
+        $("#student-number").prop("disabled", true);
+    } else {
+        $("#student-number").prop("disabled", false);
+    }
+}
