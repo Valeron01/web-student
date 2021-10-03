@@ -41,6 +41,7 @@ function setLocation(curLoc) {
     location.hash = '#' + curLoc;
 }
 
+// Обработчик клика по чек-боксу в форме регистрации
 function checkboxHandler(event) {
     if (event.target.checked) {
         $("#student-number").prop("disabled", true);
