@@ -5,7 +5,7 @@ window.onload = function() {
 // Инициализация элементов 
 // Проверка авторизации
 async function init() {
-    await changePage('/register');
+    await changePage('/auth');
 }
 
 // Изменение стандарного поведения ссылок 
