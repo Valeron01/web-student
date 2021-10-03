@@ -28,7 +28,7 @@ async function changePage(url) {
     .done((html) => {
         $("#root").html(html);
         bindQueriesForLinks();
-        setLocation(url);
+        // setLocation(url);
     });
 }
 
