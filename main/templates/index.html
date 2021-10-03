@@ -1,0 +1,43 @@
+{% csrf_token %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href='../static/css/style.css'>
+    <title>Document</title>
+</head>
+<body>
+    <div class="wrapper layout">
+        <header class="layout__header">
+
+        </header>
+
+        <main class="layout__main">
+            <div id="root">
+
+                <div id="auth" class="dialog">
+                    <div class="dialog__inner dialog-wrapper">
+                        <h3 class="dialog__title">Регистрация</h3>
+                        <form class="dialog__form" action="/auth" method="post">
+                            <input class="dialog__text-field" type="text" placeholder="email">
+                            <input class="dialog__text-field" type="password" placeholder="пароль">
+                            <input class="dialog__text-field" type="password" placeholder="подтвердите пароль">
+                            <button class="dialog__button">Продолжить</button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+        <footer class="layout__footer">
+
+        </footer>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script src='{static "js/script.js"}'></script>
+</body>
+</html>
