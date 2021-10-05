@@ -50,7 +50,6 @@ function buildPanel(data) {
     ids.forEach((el) => {
         $('#'+el.id).on('click', () => semesterClickHandler(el.num));
     });
-    console.log(inner);
 }
 
 // Фунция обработчик клика по кнопке в панели семстров 
@@ -103,8 +102,6 @@ function logout() {
     $.ajax({
         url: '/logout',
         method: "post",
-        dataType: 'html'
     })
-    .done(html => $("#root").html(html));
 }
 
