@@ -3,6 +3,7 @@ from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.template.loader import render_to_string
+from django.shortcuts import redirect
 
 from .models import *
 
@@ -13,9 +14,9 @@ def index(request:HttpRequest):
 
     if request.method == 'POST':
         if request.user.is_authenticated:
-            return render_to_string('_profile.html')
+            return render(request, '_profile.html')
         else:
-            return render_to_string('_auth.html')
+            return render(request, '_auth.html')
 
 def register(request:HttpRequest):
     if request.method == 'GET':
@@ -40,13 +41,15 @@ def auth(request:HttpRequest):
     if request.method == 'GET':
         return render(request, '_auth.html')
     if request.method == 'POST':
-        user = authenticate(email=request.POST['email'], password=request.POST['password'])
+        user = authenticate(username=request.POST['email'], password=request.POST['password'])
 
         if user is not None:
             login(request, user)
-            return JsonResponse({'success':True})
+            return redirect('/')
 
         return JsonResponse({'success':False})
+
+
     return HttpResponse('wrong request')
     
 def profile(request:HttpRequest):
