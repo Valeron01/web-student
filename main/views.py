@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout as logout_user
 from django.template.loader import render_to_string
 from django.shortcuts import redirect
 
@@ -45,14 +45,14 @@ def auth(request:HttpRequest):
 
         if user is not None:
             login(request, user)
-            return redirect('/')
-
-        return JsonResponse({'success':False})
-
-
-    return HttpResponse('wrong request')
+    
+    return redirect('/')
     
 def profile(request:HttpRequest):
     if request.method == 'GET':
         return render(request, '_profile.html')
     return HttpResponse('wrong request')
+
+def logout(request:HttpRequest):
+    logout_user(request)
+    return redirect('/')
