@@ -85,7 +85,6 @@ html, body, .layout, #root {
 
     display: flex;
     justify-content: space-between;
-    
 }
 .subjects__chooser {
     width: 50%;
