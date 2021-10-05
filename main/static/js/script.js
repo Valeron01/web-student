@@ -99,3 +99,12 @@ function checkboxHandler(event) {
     }
 }
 
+function logout() {
+    $.ajax({
+        url: '/logout',
+        method: "post",
+        dataType: 'html'
+    })
+    .done(html => $("#root").html(html));
+}
+
