@@ -1,3 +1,20 @@
 from django.db import models
+from django.contrib.auth.models import User
 
-# Create your models here.
+class UserDetail(models.Model):
+    user = models.ForeignKey(User, models.CASCADE, default=None)
+    first_name = models.CharField(max_length=40)
+    last_name = models.CharField(max_length=40)
+    patronymic = models.CharField(max_length=40)
+
+    is_teacher = models.BooleanField(default=False)
+    student_code = models.IntegerField(default=0)
+
+    def __str__(self):
+        detail = 'преподаватель' if is_teacher else student_code
+        return f'{first_name} {last_name} {patronymic}, {detail}'
+
+
+    class Meta:
+        verbose_name = 'Детальная информация'
+        verbose_name_plural = 'Детальная информация'
