@@ -5,8 +5,7 @@ window.onload = function() {
 // Инициализация элементов 
 // Проверка авторизации
 async function init() {
-    $.ajax({url: "/", method: "post", dataType: "html"}).done(html => $("#root").html(html));
-
+    changePage('/profile')
     buildTable([{name: "Мат.Анализ", teacher: "Сирота Е.А.", mark: 3}]);
     buildPanel([{id: 1, name: "I семестр"}]);
 }
@@ -50,7 +49,6 @@ function buildPanel(data) {
     ids.forEach((el) => {
         $('#'+el.id).on('click', () => semesterClickHandler(el.num));
     });
-    console.log(inner);
 }
 
 // Фунция обработчик клика по кнопке в панели семстров 
@@ -77,17 +75,7 @@ async function changePage(url) {
     .done((html) => {
         $("#root").html(html);
         bindQueriesForLinks();
-        // setLocation(url);
     });
-}
-
-//Фунция изменяет адресную строку
-function setLocation(curLoc) {
-    try {
-      history.pushState(null, null, curLoc);
-      return;
-    } catch(e) {}
-    location.hash = '#' + curLoc;
 }
 
 // Обработчик клика по чек-боксу в форме регистрации
