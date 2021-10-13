@@ -22,6 +22,11 @@ def register(request:HttpRequest):
     if request.method == 'GET':
         return render(request, '_register.html')
     if request.method == 'POST':
+
+        founded_users = User.objects.get(username=request.POST['email'])
+        if founded_users is not None:
+            return JsonResponse({'success':False})
+
         new_user = User.objects.create(username=request.POST['email'], email=request.POST['email'], password=request.POST['password'])
 
         user_detail = UserDetail.objects.create(
