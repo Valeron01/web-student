@@ -5,10 +5,7 @@ window.onload = function() {
 // Инициализация элементов 
 // Проверка авторизации
 async function init() {
-    await $.ajax({url: "/", method: "post", dataType: "html"})
-    .done(html => $("#root").html(html));
-    bindQueriesForLinks()
-
+    changePage('/profile')
     buildTable([{name: "Мат.Анализ", teacher: "Сирота Е.А.", mark: 3}]);
     buildPanel([{id: 1, name: "I семестр"}]);
 }
@@ -88,12 +85,5 @@ function checkboxHandler(event) {
     } else {
         $("#student-number").prop("disabled", false);
     }
-}
-
-function logout() {
-    $.ajax({
-        url: '/logout',
-        method: "post",
-    })
 }
 
