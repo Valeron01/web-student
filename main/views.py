@@ -68,5 +68,5 @@ def profile(request:HttpRequest):
 
 def logout(request:HttpRequest):
     logout_user(request)
-    return redirect('/')
+    return redirect('/auth')
 
