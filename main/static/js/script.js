@@ -78,12 +78,3 @@ async function changePage(url) {
     });
 }
 
-// Обработчик клика по чек-боксу в форме регистрации
-function checkboxHandler(event) {
-    if (event.target.checked) {
-        $("#student-number").prop("disabled", true);
-    } else {
-        $("#student-number").prop("disabled", false);
-    }
-}
-
