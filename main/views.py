@@ -31,6 +31,14 @@ def register(request:HttpRequest):
             request.POST['studentCode'])
         
         new_user.save()
+
+        if request.POST['isTeacher']:
+            teacher = Teacher.objects.create(user=new_user)
+            teacher.save()
+        else:
+            student = Student.objects.create(user=new_user, student_code=request.POST['studentCode'])
+            student.save()
+
         login(request, new_user)
 
         return JsonResponse({'success':True})
@@ -56,3 +64,4 @@ def profile(request:HttpRequest):
 def logout(request:HttpRequest):
     logout_user(request)
     return redirect('/')
+

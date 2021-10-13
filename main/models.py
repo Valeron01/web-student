@@ -8,7 +8,6 @@ class UserDetail(models.Model):
     patronymic = models.CharField(max_length=40)
 
     is_teacher = models.BooleanField(default=False)
-    student_code = models.IntegerField(default=0)
 
     def __str__(self):
         detail = 'преподаватель' if is_teacher else student_code
@@ -18,3 +17,21 @@ class UserDetail(models.Model):
     class Meta:
         verbose_name = 'Детальная информация'
         verbose_name_plural = 'Детальная информация'
+
+
+class Student(models.Model):
+    user = models.ForeignKey(User, models.CASCADE, default=None)
+    student_code = models.IntegerField(default=0)
+
+class Teacher(models.Model):
+    user = models.ForeignKey(User, models.CASCADE, default=None)
+
+class Subject(models.Model):
+    teacher = models.ForeignKey(Teacher, models.CASCADE, default=None)
+    name = models.CharField(max_length=40)
+    semester = models.IntegerField(default=-1)
+
+class Mark(models.Model):
+    student = models.ForeignKey(Student, models.CASCADE, default=None)
+    subject = models.ForeignKey(Subject, models.CASCADE, default=None)
+    mark = models.IntegerField(default=0)
