@@ -22,6 +22,11 @@ def register(request:HttpRequest):
     if request.method == 'GET':
         return render(request, '_register.html')
     if request.method == 'POST':
+
+        founded_users = User.objects.get(username=request.POST['email'])
+        if founded_users is not None:
+            return JsonResponse({'success':False})
+
         new_user = User.objects.create(username=request.POST['email'], email=request.POST['email'], password=request.POST['password'])
 
         user_detail = UserDetail.objects.create(
@@ -31,6 +36,14 @@ def register(request:HttpRequest):
             request.POST['studentCode'])
         
         new_user.save()
+
+        if request.POST['isTeacher']:
+            teacher = Teacher.objects.create(user=new_user)
+            teacher.save()
+        else:
+            student = Student.objects.create(user=new_user, student_code=request.POST['studentCode'])
+            student.save()
+
         login(request, new_user)
 
         return JsonResponse({'success':True})
@@ -55,4 +68,5 @@ def profile(request:HttpRequest):
 
 def logout(request:HttpRequest):
     logout_user(request)
-    return redirect('/')
+    return redirect('/auth')
+
