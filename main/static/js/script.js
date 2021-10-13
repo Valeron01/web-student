@@ -5,7 +5,9 @@ window.onload = function() {
 // Инициализация элементов 
 // Проверка авторизации
 async function init() {
-    $.ajax({url: "/", method: "post", dataType: "html"}).done(html => $("#root").html(html));
+    await $.ajax({url: "/", method: "post", dataType: "html"})
+    .done(html => $("#root").html(html));
+    bindQueriesForLinks()
 
     buildTable([{name: "Мат.Анализ", teacher: "Сирота Е.А.", mark: 3}]);
     buildPanel([{id: 1, name: "I семестр"}]);
@@ -76,17 +78,7 @@ async function changePage(url) {
     .done((html) => {
         $("#root").html(html);
         bindQueriesForLinks();
-        // setLocation(url);
     });
-}
-
-//Фунция изменяет адресную строку
-function setLocation(curLoc) {
-    try {
-      history.pushState(null, null, curLoc);
-      return;
-    } catch(e) {}
-    location.hash = '#' + curLoc;
 }
 
 // Обработчик клика по чек-боксу в форме регистрации
