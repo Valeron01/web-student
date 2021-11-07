@@ -32,6 +32,19 @@ function buildTable(data) {
     table.html(inner);
 }
 
+const semesterClickHandler = (id) => {
+    $.ajax({
+        url: '/semester',
+        method: "POST",
+        dataType: "json",
+        data: {
+            semester: id
+        }
+    })
+    .done(data => buildTable(data));
+    
+}
+
 // Функция заполения панели кнопками выбора семестра
 // data -> array of objects {id, name}
 function buildPanel(data) {
@@ -43,20 +56,11 @@ function buildPanel(data) {
     $("#subjects__list").html(inner);
 
     ids.forEach((el) => {
-        $('#'+el.id).on('click', () => semesterClickHandler(el.num));
+        $('#'+el.id).on('click', () => {
+            semesterClickHandler(el.num)
+        });
     });
 }
 
 // Фунция обработчик клика по кнопке в панели семстров 
 // Запрос, ответ, заполнение таблицы данными
-function semesterClickHandler(id) {
-    $.ajax({
-        url: '/semester',
-        method: "POST",
-        dataType: "json",
-        data: {
-            id
-        }
-    })
-    .done(data => buildTable(data));
-}
