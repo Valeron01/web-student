@@ -9,9 +9,6 @@ from .models import *
 
 
 def index(request:HttpRequest):
-    # if not request.user.is_authenticated:
-    #     return redirect('/auth')
-
     if request.method == 'GET':
         return render(request, 'index.html')
 
@@ -22,6 +19,9 @@ def index(request:HttpRequest):
             return render(request, '_auth.html')
 
 def register(request:HttpRequest):
+    if request.user.is_authenticated:
+        return redirect('/profile')
+    
     if request.method == 'GET':
         return render(request, '_register.html')
     if request.method == 'POST':
@@ -54,6 +54,8 @@ def register(request:HttpRequest):
 
 
 def auth(request:HttpRequest):
+    if request.user.is_authenticated:
+        return redirect('/profile')
     if request.method == 'GET':
         return render(request, '_auth.html')
     if request.method == 'POST':
@@ -62,10 +64,10 @@ def auth(request:HttpRequest):
         if user is not None:
             login(request, user)
     
-    return redirect('/')
+    return redirect('/profile')
     
 def profile(request:HttpRequest):
-    if request.method == 'GET':
+    if request.method == 'POST':
         ud = UserDetail.objects.get(user=request.user)
         semesters = Semester.objects.all()
 
@@ -74,7 +76,7 @@ def profile(request:HttpRequest):
         return JsonResponse({
             "info": {
                 "is_teacher": ud.is_teacher, 
-                "name": ud.first_name,
+                "name": f"{ud.last_name} {ud.first_name} {ud.patronymic}",
                 "email": request.user.email
             },
             "semester": semesters_data

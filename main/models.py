@@ -2,14 +2,14 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Student(models.Model):
-    user = models.ForeignKey(User, models.CASCADE, default=None)
-    student_code = models.IntegerField(default=0)
+    user = models.OneToOneField(User, models.CASCADE, default=None, unique=True)
+    student_code = models.IntegerField(default=0, unique=True)
 
     def __str__(self):
         return str(self.user)
 
 class Teacher(models.Model):
-    user = models.ForeignKey(User, models.CASCADE, default=None)
+    user = models.OneToOneField(User, models.CASCADE, default=None, unique=True)
 
     def __str__(self):
         ud = UserDetail.objects.get(user=self.user)
@@ -22,7 +22,7 @@ class Semester(models.Model):
 
 class Subject(models.Model):
     teacher = models.ForeignKey(Teacher, models.CASCADE, default=None)
-    name = models.CharField(max_length=40)
+    name = models.CharField(max_length=40, unique=True)
     semester = models.ForeignKey(Semester, models.CASCADE)
 
     def __str__(self):
