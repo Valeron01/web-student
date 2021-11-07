@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpRequest, JsonResponse
+from django.http import HttpResponse, HttpRequest, JsonResponse, HttpResponseNotAllowed
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout as logout_user
 from django.template.loader import render_to_string
@@ -66,10 +66,42 @@ def auth(request:HttpRequest):
     
 def profile(request:HttpRequest):
     if request.method == 'GET':
+        ud = UserDetail.objects.get(user=request.user)
+        semesters = Semester.objects.all()
+
+        semesters_data = [{"id": i.id, "name": i.name} for i in semesters]
+
+        return JsonResponse({
+            "info": {
+                "is_teacher": ud.is_teacher, 
+                "name": ud.first_name,
+                "email": request.user.email
+            },
+            "semester": semesters_data
+        }, json_dumps_params={'ensure_ascii': False})
+    if request.method == 'GET':
         return render(request, '_profile.html')
     return HttpResponse('wrong request')
 
 def logout(request:HttpRequest):
     logout_user(request)
     return redirect('/auth')
+
+def semester_data(request):
+    if request.method == "POST":
+        semester_id = request.POST["semester"]
+        response = {}
+        ud = UserDetail.objects.get(user=request.user)
+
+        if not ud.is_teacher:
+            response["name"] = ud.first_name
+            student = Student.objects.get(user=request.user)
+
+            marks = Mark.objects.filter(student=student, semester__pk=semester_id)
+
+            response["marks"] = [{"name": i.subject.name, "mark": i.mark} for i in marks]
+        
+        return JsonResponse(response, json_dumps_params={'ensure_ascii': False})
+    
+    return HttpResponseNotAllowed("GET")
 
