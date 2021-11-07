@@ -9,14 +9,7 @@ from .models import *
 
 
 def index(request:HttpRequest):
-    if request.method == 'GET':
-        return render(request, 'index.html')
-
-    if request.method == 'POST':
-        if request.user.is_authenticated:
-            return render(request, '_profile.html')
-        else:
-            return render(request, '_auth.html')
+    return redirect('/profile')
 
 def register(request:HttpRequest):
     if request.user.is_authenticated:
@@ -24,86 +17,126 @@ def register(request:HttpRequest):
     
     if request.method == 'GET':
         return render(request, '_register.html')
+    
     if request.method == 'POST':
+        founded_users_exists = User.objects.filter(username=request.POST['email']).exists()
+        if founded_users_exists:
+            return HttpResponse('<h3>Пользователь с таким email уже зрегистрирован!<h3><br>\
+                                <a href="/register">Попробовать ещё</a>')
 
-        founded_users = User.objects.get(username=request.POST['email'])
-        if founded_users is not None:
-            return JsonResponse({'success':False})
-
-        new_user = User.objects.create(username=request.POST['email'], email=request.POST['email'], password=request.POST['password'])
+        new_user = User.objects.create_user(
+            username=request.POST['email'], 
+            email=request.POST['email'], 
+            password=request.POST['password'])
+        
 
         user_detail = UserDetail.objects.create(
-            new_user,
-            request.POST['firstName'], request.POST['lastName'],
-            request.POST['patronymic'], request.POST['isTeacher'], 
-            request.POST['studentCode'])
+            user=new_user,
+            first_name=request.POST['firstName'], last_name=request.POST['lastName'],
+            patronymic=request.POST['patronymic'], is_teacher=request.POST.get('isTeacher', False))
+
         
         new_user.save()
-
-        if request.POST['isTeacher']:
-            teacher = Teacher.objects.create(user=new_user)
-            teacher.save()
-        else:
-            student = Student.objects.create(user=new_user, student_code=request.POST['studentCode'])
-            student.save()
+        user_detail.save()
 
         login(request, new_user)
 
-        return JsonResponse({'success':True})
+        return redirect("/profile")
     
 
 
 def auth(request:HttpRequest):
     if request.user.is_authenticated:
+        print("ALREADY IN")
         return redirect('/profile')
+    
+
     if request.method == 'GET':
         return render(request, '_auth.html')
-    if request.method == 'POST':
-        user = authenticate(username=request.POST['email'], password=request.POST['password'])
 
+    if request.method == 'POST':
+        user = authenticate(email=request.POST['email'],username=request.POST['email'], password=request.POST['password'])
+        print(request.POST['email'])
+        print(request.POST['password'])
+        print('user')
         if user is not None:
             login(request, user)
+            return redirect('/profile')
+        
+        return HttpResponse('<h3>Пользователь с таким email/паролем не найден!<h3><br>\
+                                <a href="/auth">Попробовать ещё</a>')
     
-    return redirect('/profile')
+    return redirect('/auth')
     
 def profile(request:HttpRequest):
-    if request.method == 'POST':
-        ud = UserDetail.objects.get(user=request.user)
-        semesters = Semester.objects.all()
+    if not request.user.is_authenticated:
+        return redirect('/auth')
 
-        semesters_data = [{"id": i.id, "name": i.name} for i in semesters]
-
-        return JsonResponse({
-            "info": {
-                "is_teacher": ud.is_teacher, 
-                "name": f"{ud.last_name} {ud.first_name} {ud.patronymic}",
-                "email": request.user.email
-            },
-            "semester": semesters_data
-        }, json_dumps_params={'ensure_ascii': False})
     if request.method == 'GET':
         return render(request, '_profile.html')
+
+    if request.method == 'POST':
+        ud = UserDetail.objects.get(user=request.user)
+
+        if not ud.is_teacher:
+            semesters = Semester.objects.all()
+
+            semesters_data = [{"id": i.id, "name": i.name} for i in semesters]
+
+            return JsonResponse({
+                "info": {
+                    "is_teacher": ud.is_teacher, 
+                    "name": f"{ud.last_name} {ud.first_name} {ud.patronymic}",
+                    "email": request.user.email
+                },
+                "semester": semesters_data
+            }, json_dumps_params={'ensure_ascii': False})
+        else:
+            subjects = Subject.objects.filter(user=request.user)
+
+            subjects_data = [{"id": i.id, "name": i.name} for i in subjects]
+            
+            return JsonResponse({
+                "info": {
+                    "is_teacher": ud.is_teacher, 
+                    "name": f"{ud.last_name} {ud.first_name} {ud.patronymic}",
+                    "email": request.user.email
+                },
+                "subjects": subjects_data
+            }, json_dumps_params={'ensure_ascii': False})
     return HttpResponse('wrong request')
 
 def logout(request:HttpRequest):
     logout_user(request)
     return redirect('/auth')
 
-def semester_data(request):
+def get_panel_data(request):
+    data_id = request.POST["id"]
+
     if request.method == "POST":
-        semester_id = request.POST["semester"]
         response = {}
         ud = UserDetail.objects.get(user=request.user)
 
         if not ud.is_teacher:
-            student = Student.objects.get(user=request.user)
-
-            marks = Mark.objects.filter(student=student, semester__pk=semester_id)
+            marks = Mark.objects.filter(user=request.user, semester__pk=data_id)
             
             marks_data = []
 
             for i in marks:
-                teach_ud = UserDetail.objects.get(user=i.subject.teacher.user)
+                data = {
+                    "name": i.subject.name,
+                    "mark": i.mark,
+                    "teacher": f"{i.mark.subject.last_name} {i.mark.subject.first_name[0]}.{i.mark.subject.patronymic[0]}"
+                }
+
+                marks_data.append(data)        
+            return JsonResponse({"marks": marks_data}, json_dumps_params={'ensure_ascii': False})
+        else:
+            marks = Mark.objects.filter(user=request.user, subject__pk=data_id)
+            
+            marks_data = []
+
+            for i in marks:
                 data = {
                     "name": i.subject.name,
                     "mark": i.mark,
