@@ -6,5 +6,6 @@ admin.site.register(Student)
 admin.site.register(Mark)
 admin.site.register(Subject)
 admin.site.register(UserDetail)
+admin.site.register(Semester)
 
 # Register your models here.
