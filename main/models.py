@@ -6,21 +6,6 @@ class Semester(models.Model):
     def __str__(self):
         return self.name
 
-class Subject(models.Model):
-    user = models.ForeignKey(User, models.CASCADE, default=None)
-    name = models.CharField(max_length=40, unique=True)
-    semester = models.ForeignKey(Semester, models.CASCADE)
-
-    def __str__(self):
-        return f"{self.user}, {self.name}"
-
-class Mark(models.Model):
-    user = models.ForeignKey(User, models.CASCADE, default=None)
-    subject = models.ForeignKey(Subject, models.CASCADE, default=None)
-    mark = models.IntegerField(default=0)
-    semester = models.ForeignKey(Semester, models.CASCADE, default=None)
-
-
 class UserDetail(models.Model):
     user = models.ForeignKey(User, models.CASCADE, default=None)
     first_name = models.CharField(max_length=40)
@@ -37,3 +22,16 @@ class UserDetail(models.Model):
     class Meta:
         verbose_name = 'Детальная информация'
         verbose_name_plural = 'Детальная информация'
+
+class Subject(models.Model):
+    user = models.ForeignKey(UserDetail, models.CASCADE, default=None)
+    name = models.CharField(max_length=40, unique=True)
+    semester = models.ForeignKey(Semester, models.CASCADE)
+
+    def __str__(self):
+        return f"{self.user}, {self.name}"
+
+class Mark(models.Model):
+    user = models.ForeignKey(User, models.CASCADE, default=None)
+    subject = models.ForeignKey(Subject, models.CASCADE, default=None)
+    mark = models.IntegerField(default=0)

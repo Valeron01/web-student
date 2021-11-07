@@ -33,7 +33,7 @@ def register(request:HttpRequest):
         user_detail = UserDetail.objects.create(
             user=new_user,
             first_name=request.POST['firstName'], last_name=request.POST['lastName'],
-            patronymic=request.POST['patronymic'], is_teacher=request.POST.get('isTeacher', False))
+            patronymic=request.POST['patronymic'], is_teacher=request.POST.get('isTeacher', False) == 'on')
 
         
         new_user.save()
@@ -47,7 +47,6 @@ def register(request:HttpRequest):
 
 def auth(request:HttpRequest):
     if request.user.is_authenticated:
-        print("ALREADY IN")
         return redirect('/profile')
     
 
@@ -56,9 +55,6 @@ def auth(request:HttpRequest):
 
     if request.method == 'POST':
         user = authenticate(email=request.POST['email'],username=request.POST['email'], password=request.POST['password'])
-        print(request.POST['email'])
-        print(request.POST['password'])
-        print('user')
         if user is not None:
             login(request, user)
             return redirect('/profile')
@@ -111,14 +107,14 @@ def logout(request:HttpRequest):
     return redirect('/auth')
 
 def get_panel_data(request):
-    data_id = request.POST["id"]
+    data_id = request.GET["id"]
 
-    if request.method == "POST":
+    if request.method == "GET":
         response = {}
         ud = UserDetail.objects.get(user=request.user)
 
         if not ud.is_teacher:
-            marks = Mark.objects.filter(user=request.user, semester__pk=data_id)
+            marks = Mark.objects.filter(user=request.user, subject__semester__pk=data_id)
             
             marks_data = []
 
@@ -126,7 +122,7 @@ def get_panel_data(request):
                 data = {
                     "name": i.subject.name,
                     "mark": i.mark,
-                    "teacher": f"{i.mark.subject.last_name} {i.mark.subject.first_name[0]}.{i.mark.subject.patronymic[0]}"
+                    "teacher": f"{i.subject.user.last_name} {i.subject.user.first_name[0]}.{i.subject.user.patronymic[0]}"
                 }
 
                 marks_data.append(data)        
@@ -138,9 +134,8 @@ def get_panel_data(request):
 
             for i in marks:
                 data = {
-                    "name": i.subject.name,
                     "mark": i.mark,
-                    "teacher": f"{teach_ud.last_name} {teach_ud.first_name[0]}.{teach_ud.patronymic[0]}"
+                    "student": f"{mark.user.last_name} {mark.user.first_name[0]}.{mark.user.patronymic[0]}"
                 }
 
                 marks_data.append(data)        
