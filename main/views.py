@@ -114,6 +114,6 @@ def semester_data(request):
 
 
         
-        return JsonResponse({"marks": data}, json_dumps_params={'ensure_ascii': False})
+        return JsonResponse({"marks": marks_data}, json_dumps_params={'ensure_ascii': False})
     
     return HttpResponseNotAllowed("GET")
