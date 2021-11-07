@@ -32,6 +32,8 @@ function buildTable(data) {
     table.html(inner);
 }
 
+// Фунция обработчик клика по кнопке в панели семстров 
+// Запрос, ответ, заполнение таблицы данными
 const semesterClickHandler = (id) => {
     $.ajax({
         url: '/semester',
@@ -42,7 +44,6 @@ const semesterClickHandler = (id) => {
         }
     })
     .done(data => buildTable(data));
-    
 }
 
 // Функция заполения панели кнопками выбора семестра
@@ -62,5 +63,4 @@ function buildPanel(data) {
     });
 }
 
-// Фунция обработчик клика по кнопке в панели семстров 
-// Запрос, ответ, заполнение таблицы данными
+
