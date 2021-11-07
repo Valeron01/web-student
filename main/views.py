@@ -9,8 +9,8 @@ from .models import *
 
 
 def index(request:HttpRequest):
-    if not request.user.is_authenticated:
-        return redirect('/auth')
+    # if not request.user.is_authenticated:
+    #     return redirect('/auth')
 
     if request.method == 'GET':
         return render(request, 'index.html')
