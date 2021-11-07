@@ -110,10 +110,7 @@ def semester_data(request):
                     "teacher": f"{teach_ud.last_name} {teach_ud.first_name[0]}.{teach_ud.patronymic[0]}"
                 }
 
-                marks_data.append(data)
-
-
-        
-        return JsonResponse({"marks": marks_data}, json_dumps_params={'ensure_ascii': False})
+                marks_data.append(data)        
+            return JsonResponse({"marks": marks_data}, json_dumps_params={'ensure_ascii': False})
     
     return HttpResponseNotAllowed("GET")
