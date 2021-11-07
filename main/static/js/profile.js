@@ -5,6 +5,7 @@ window.onload = function() {
         dataType: "json"
     })
     .done((res) => {
+
         initProfile(res.info)
         buildPanel(res.semester)
     })
@@ -21,7 +22,7 @@ function initProfile(data) {
 function buildTable(data) {
     const table = $('#table');
     let header = `<tr class="table__header"><th>Название</th><th>Преподаватель</th><th>Оценка</th></tr>`;
-    let inner = data.reduce((acc, el) => {
+    let inner = data.marks.reduce((acc, el) => {
          return acc + `<tr>
                     <td>${el.name}</td>
                     <td>${el.teacher}</td>
@@ -30,6 +31,20 @@ function buildTable(data) {
     }, header);
     
     table.html(inner);
+}
+
+// Фунция обработчик клика по кнопке в панели семстров 
+// Запрос, ответ, заполнение таблицы данными
+const semesterClickHandler = (id) => {
+    $.ajax({
+        url: '/get_panel_data',
+        method: "POST",
+        dataType: "json",
+        data: {
+            id: id
+        }
+    })
+    .done(data => buildTable(data));
 }
 
 // Функция заполения панели кнопками выбора семестра
@@ -43,20 +58,10 @@ function buildPanel(data) {
     $("#subjects__list").html(inner);
 
     ids.forEach((el) => {
-        $('#'+el.id).on('click', () => semesterClickHandler(el.num));
+        $('#'+el.id).on('click', () => {
+            semesterClickHandler(el.num)
+        });
     });
 }
 
-// Фунция обработчик клика по кнопке в панели семстров 
-// Запрос, ответ, заполнение таблицы данными
-function semesterClickHandler(id) {
-    $.ajax({
-        url: '/semester',
-        method: "POST",
-        dataType: "json",
-        data: {
-            id
-        }
-    })
-    .done(data => buildTable(data));
-}
+
