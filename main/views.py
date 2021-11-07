@@ -96,14 +96,24 @@ def semester_data(request):
         ud = UserDetail.objects.get(user=request.user)
 
         if not ud.is_teacher:
-            response["name"] = ud.first_name
             student = Student.objects.get(user=request.user)
 
             marks = Mark.objects.filter(student=student, semester__pk=semester_id)
+            
+            marks_data = []
 
-            response["marks"] = [{"name": i.subject.name, "mark": i.mark} for i in marks]
+            for i in marks:
+                teach_ud = UserDetail.objects.get(user=i.subject.teacher.user)
+                data = {
+                    "name": i.subject.name,
+                    "mark": i.mark,
+                    "teacher": f"{teach_ud.last_name} {teach_ud.first_name[0]}.{teach_ud.patronymic[0]}"
+                }
+
+                marks_data.append(data)
+
+
         
-        return JsonResponse(response, json_dumps_params={'ensure_ascii': False})
+        return JsonResponse({"marks": data}, json_dumps_params={'ensure_ascii': False})
     
     return HttpResponseNotAllowed("GET")
-
