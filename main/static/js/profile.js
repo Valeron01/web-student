@@ -5,6 +5,7 @@ window.onload = function() {
         dataType: "json"
     })
     .done((res) => {
+
         initProfile(res.info)
         buildPanel(res.semester)
     })
@@ -21,7 +22,7 @@ function initProfile(data) {
 function buildTable(data) {
     const table = $('#table');
     let header = `<tr class="table__header"><th>Название</th><th>Преподаватель</th><th>Оценка</th></tr>`;
-    let inner = data.reduce((acc, el) => {
+    let inner = data.marks.reduce((acc, el) => {
          return acc + `<tr>
                     <td>${el.name}</td>
                     <td>${el.teacher}</td>
@@ -36,11 +37,11 @@ function buildTable(data) {
 // Запрос, ответ, заполнение таблицы данными
 const semesterClickHandler = (id) => {
     $.ajax({
-        url: '/semester',
+        url: '/get_panel_data',
         method: "POST",
         dataType: "json",
         data: {
-            semester: id
+            id: id
         }
     })
     .done(data => buildTable(data));
