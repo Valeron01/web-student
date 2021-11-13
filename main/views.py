@@ -177,11 +177,11 @@ def modify_mark(request):
         for mark_data in modified_marks:
             subject_id = mark_data['subject_id']
             student_id = mark_data['student_id']
-            mark = mark_data['mark']
+            new_mark = mark_data['mark']
         
             mark = Mark.objects.get(subject__pk=subject_id, user__pk=student_id)
             try:
-                mark.mark = int(mark)
+                mark.mark = int(new_mark)
                 mark.save()
             except Exception as e:
                 return JsonResponse({"exception": str(e)})
