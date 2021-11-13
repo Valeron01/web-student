@@ -104,15 +104,14 @@ const sendMarkData = (subject_id) => {
             mark: inputs[el].value
         })
     })
-    const data = {
-        data: result
+    const sendData = {
+        "data": result
     }
-    
     $.ajax({
         url: '/modify_mark',
         method: 'post',
         dataType: 'json',
-        data: data
+        data: JSON.stringify(sendData)
     })
     .done((res) => location.reload())
 } 
