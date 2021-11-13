@@ -109,7 +109,7 @@ const sendMarkData = (subject_id) => {
         method: 'post',
         dataType: 'json',
         data: {
-            data: JSON.stringify(result)
+            marks: JSON.stringify(result)
         }
     })
     .done((res) => location.reload())
