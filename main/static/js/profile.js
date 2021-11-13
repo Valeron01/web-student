@@ -34,7 +34,6 @@ function buildSubjectPanel(data) {
 
 //Формирование таблицы оценок всех студентов по данному предмету
 function buildSubjectTable(data, id) {
-    console.log(data);
     const table = $('#table')
     let header = `<tr class="table__header"><th>Студент</th><th>Оценка</th></tr>`
     let inner = data.marks.reduce((acc, el) => {
@@ -104,7 +103,6 @@ const sendMarkData = (subject_id) => {
             mark: inputs[el].value
         }
     })
-    console.log(data);
     $.ajax({
         url: '/modify_mark',
         method: 'post',
