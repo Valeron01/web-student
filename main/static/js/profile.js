@@ -108,7 +108,9 @@ const sendMarkData = (subject_id) => {
         url: '/modify_mark',
         method: 'post',
         dataType: 'json',
-        data: JSON.stringify(result)
+        data: {
+            data: JSON.stringify(result)
+        }
     })
     .done((res) => location.reload())
 } 
