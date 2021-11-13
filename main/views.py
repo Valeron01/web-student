@@ -74,7 +74,7 @@ def profile(request:HttpRequest):
     if request.method == 'POST':
         ud = UserDetail.objects.get(user=request.user)
 
-        if not ud.is_teacher:
+        if not ud.is_teacher: # Student
             semesters = Semester.objects.all()
 
             semesters_data = [{"id": i.id, "name": i.name} for i in semesters]
@@ -87,7 +87,7 @@ def profile(request:HttpRequest):
                 },
                 "semester": semesters_data
             }, json_dumps_params={'ensure_ascii': False})
-        else:
+        else: # Teacher
             subjects = Subject.objects.filter(user=ud)
 
             subjects_data = [{"id": i.id, "name": i.name} for i in subjects]
@@ -139,5 +139,30 @@ def get_panel_data(request):
 
                 marks_data.append(data)        
             return JsonResponse({"marks": marks_data}, json_dumps_params={'ensure_ascii': False})
+    
+    return HttpResponseNotAllowed("GET")
+
+
+def get_subject_data(request):
+    if request.method == "POST":
+        ud = UserDetail.objects.get(user=request.user)
+
+        subject = Subject.objects.get(pk=request.POST['id'])
+
+        marks = Mark.objects.filter(subject__pk=request.POST['id'])
+
+
+        marks_list = []
+        for mark in marks:
+            mark_data = {}
+            student_ud = UserDetail.objects.get(user=mark.user)
+            
+            mark_data["name"] = f"{student_ud.first_name} {student_ud.last_name[0]}.{student_ud.patronymic[0]}"
+            mark_data["id"] = student_ud.pk
+            mark_data["mark"] = mark.mark
+
+            marks_list.append(mark_data)
+        
+        return JsonResponse({"marks": marks_list})
     
     return HttpResponseNotAllowed("GET")
