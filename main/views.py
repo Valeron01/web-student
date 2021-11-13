@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpRequest, JsonResponse, HttpResponseNotAllowed
+from django.http import HttpResponse, HttpRequest, JsonResponse, HttpResponseNotAllowed, HttpResponseForbidden
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout as logout_user
 from django.template.loader import render_to_string
@@ -169,6 +169,8 @@ def get_subject_data(request):
 
 
 def modify_mark(request):
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden("Forbidden!, not authorized")
     if request.method == "POST":
         subject_id = request.POST['subject_id']
         student_id = request.POST['student_id']
