@@ -88,7 +88,7 @@ def profile(request:HttpRequest):
                 "semester": semesters_data
             }, json_dumps_params={'ensure_ascii': False})
         else:
-            subjects = Subject.objects.filter(user=request.user)
+            subjects = Subject.objects.filter(user=ud)
 
             subjects_data = [{"id": i.id, "name": i.name} for i in subjects]
             
