@@ -6,18 +6,17 @@ window.onload = function() {
     })
     .done((res) => {
         initProfile(res.info)
-        console.log(res.info.is_teacher);
         res.info.is_teacher ? buildSubjectPanel(res.subjects) : buildSemesterPanel(res.semester)
-        console.log(res.semester);
     })
 }
-
+//Вставка данных о пользователе в поля 
 function initProfile(data) {
     $('#role').text(data.role)
     $('#name').text(data.name)
     $('#email').text(data.email)
 }
 
+//Формирование панели кнопок предметов
 function buildSubjectPanel(data) {
     let ids = []
     let inner = data.reduce((acc, el) => {
@@ -33,36 +32,38 @@ function buildSubjectPanel(data) {
     });
 }
 
-function buildSubjectTable(data) {
-    const table = $('#table');
-    let header = `<tr class="table__header"><th>Студент</th><th>Оценка</th></tr>`;
+//Формирование таблицы оценок всех студентов по данному предмету
+function buildSubjectTable(data, id) {
+    const table = $('#table')
+    let header = `<tr class="table__header"><th>Студент</th><th>Оценка</th></tr>`
     let inner = data.marks.reduce((acc, el) => {
          return acc + `<tr>
                     <td>${el.name}</td>
                     <td>
-                        <input class="inputMark" type="text" value="${el.mark}">
+                        <input class="inputMark" id="${el.id}" type="text" value="${el.mark}">
                     </td>
-                </tr>`;
-    }, header);
-    inner += '<button id="btnSave">Сохранить</button>'
-    table.html(inner);
-    $("#btnSave").on('click', sendMarkData)
+                </tr>`
+    }, header)
+    
+    table.html(inner)
+    $('.brnPlace').html('<button class="button semesterBtn" id="btnSave">Сохранить</button>')
+    $('#btnSave').on('click', () => sendMarkData(id))
 }
 
 //Функция заполнения таблицы с предметами
 //data -> array of objects {name, teacher, mark}
 function buildTable(data) {
-    const table = $('#table');
-    let header = `<tr class="table__header"><th>Название</th><th>Преподаватель</th><th>Оценка</th></tr>`;
+    const table = $('#table')
+    let header = `<tr class="table__header"><th>Название</th><th>Преподаватель</th><th>Оценка</th></tr>`
     let inner = data.marks.reduce((acc, el) => {
          return acc + `<tr>
                     <td>${el.name}</td>
                     <td>${el.teacher}</td>
                     <td>${el.mark}</td>
-                </tr>`;
-    }, header);
+                </tr>`
+    }, header)
     
-    table.html(inner);
+    table.html(inner)
 }
 
 // Фунция обработчик клика по кнопке в панели семстров 
@@ -76,9 +77,10 @@ const semesterClickHandler = (id) => {
             id
         }
     })
-    .done(data => buildTable(data));
+    .done(data => buildTable(data))
 }
 
+//Обработка клика по кнопе предмета
 const subjectClickHandler = (id) => {
     $.ajax({
         url: '/get_subject_data',
@@ -88,11 +90,26 @@ const subjectClickHandler = (id) => {
             id
         }
     })
-    .done(data => buildSubjectTable(data));
+    .done(data => buildSubjectTable(data, id))
 }
 
-const sendMarkData = () => {
-
+//Отправка измененных данных
+const sendMarkData = (subject_id) => {
+    const inputs = $('.inputMark')
+    const data = inputs.map((el) => {
+        return {
+            subject_id,
+            student_id: inputs[el].id,
+            mark: inputs[el].value
+        }
+    })
+    $.ajax({
+        url: '/modify_mark',
+        method: 'post',
+        dataType: 'json',
+        data
+    })
+    .done((res) => location.reload())
 } 
 
 // Функция заполения панели кнопками выбора семестра
@@ -100,10 +117,10 @@ const sendMarkData = () => {
 function buildSemesterPanel(data) {
     let ids = []
     let inner = data.reduce((acc, el) => {
-        ids.push({id: 'btn'+el.id, num: el.id});
+        ids.push({id: 'btn'+el.id, num: el.id})
         return acc + `<button id="${'btn' + el.id}"class="button semesterBtn">${el.name}</button>`
     }, '');
-    $("#subjects__list").html(inner);
+    $("#subjects__list").html(inner)
     
 
     ids.forEach((el) => {
