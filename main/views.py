@@ -107,9 +107,8 @@ def logout(request:HttpRequest):
     return redirect('/auth')
 
 def get_panel_data(request):
-    data_id = request.GET["id"]
-
-    if request.method == "GET":
+    if request.method == "POST":
+        data_id = request.POST["id"]
         response = {}
         ud = UserDetail.objects.get(user=request.user)
 
