@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout as logout_user
 from django.template.loader import render_to_string
 from django.shortcuts import redirect
+import json
 
 from .models import *
 
@@ -172,9 +173,11 @@ def modify_mark(request):
     if not request.user.is_authenticated:
         return HttpResponseForbidden("Forbidden!, not authorized")
     if request.method == "POST":
-        modified_marks = request.POST["data"]
+        modified_marks = request.POST["marks"]
+        modified_marks = json.loads(modified_marks)
 
         for mark_data in modified_marks:
+            print(mark_data)
             subject_id = mark_data['subject_id']
             student_id = mark_data['student_id']
             new_mark = mark_data['mark']
@@ -185,6 +188,5 @@ def modify_mark(request):
                 mark.save()
             except Exception as e:
                 return JsonResponse({"exception": str(e)})
-        
         return JsonResponse({"status": "OK"})
     return HttpResponseNotAllowed("GET")

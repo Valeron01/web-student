@@ -35,3 +35,6 @@ class Mark(models.Model):
     user = models.ForeignKey(User, models.CASCADE, default=None)
     subject = models.ForeignKey(Subject, models.CASCADE, default=None)
     mark = models.IntegerField(default=-1)
+
+    class Meta:
+        unique_together = [['user', 'subject']]
