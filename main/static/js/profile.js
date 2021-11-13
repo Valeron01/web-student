@@ -96,18 +96,23 @@ const subjectClickHandler = (id) => {
 //Отправка измененных данных
 const sendMarkData = (subject_id) => {
     const inputs = $('.inputMark')
-    const data = inputs.map((el) => {
-        return {
+    const result = []
+    inputs.each((el) => {
+        result.push({
             subject_id,
             student_id: inputs[el].id,
             mark: inputs[el].value
-        }
+        })
     })
+    const data = {
+        data: result
+    }
+    
     $.ajax({
         url: '/modify_mark',
         method: 'post',
         dataType: 'json',
-        data
+        data: data
     })
     .done((res) => location.reload())
 } 
