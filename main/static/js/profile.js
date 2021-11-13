@@ -8,6 +8,7 @@ window.onload = function() {
 
         initProfile(res.info)
         buildPanel(res.semester)
+        console.log(res.semester);
     })
 }
 
@@ -36,12 +37,13 @@ function buildTable(data) {
 // Фунция обработчик клика по кнопке в панели семстров 
 // Запрос, ответ, заполнение таблицы данными
 const semesterClickHandler = (id) => {
+    console.log("ddede");
     $.ajax({
         url: '/get_panel_data',
         method: "POST",
         dataType: "json",
         data: {
-            id: id
+            id
         }
     })
     .done(data => buildTable(data));
@@ -52,8 +54,8 @@ const semesterClickHandler = (id) => {
 function buildPanel(data) {
     let ids = []
     let inner = data.reduce((acc, el) => {
-        ids.push({id: 'btn'+el.name, num: el.id});
-        return acc + `<button id="${'btn' + el.name}"class="button semesterBtn">${el.name}</button>`
+        ids.push({id: 'btn'+el.id, num: el.id});
+        return acc + `<button id="${'btn' + el.id}"class="button semesterBtn">${el.name}</button>`
     }, '');
     $("#subjects__list").html(inner);
 
