@@ -46,7 +46,7 @@ function buildSubjectTable(data, id) {
     }, header)
     
     table.html(inner)
-    $('.brnPlace').html('<button class="button semesterBtn" id="btnSave">Сохранить</button>')
+    $('.brnPlace').html('<button class="button saveBtn" id="btnSave">Сохранить</button>')
     $('#btnSave').on('click', () => sendMarkData(id))
 }
 
