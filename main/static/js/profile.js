@@ -6,7 +6,8 @@ window.onload = function() {
     })
     .done((res) => {
         initProfile(res.info)
-        res.info.is_teacher ? buildSubjectPanel(res.subject) : buildSemesterPanel(res.semester)
+        console.log(res.info.is_teacher);
+        res.info.is_teacher ? buildSubjectPanel(res.subjects) : buildSemesterPanel(res.semester)
         console.log(res.semester);
     })
 }
@@ -20,11 +21,10 @@ function initProfile(data) {
 function buildSubjectPanel(data) {
     let ids = []
     let inner = data.reduce((acc, el) => {
-        ids.push({id: 'btn'+el.id, num: el.id});
-        return acc + `<button id="${'btnSub' + el.id}"class="button subjectBtn">${el.name}</button>`
+        ids.push({id: 'btnSub'+el.id, num: el.id});
+        return acc + `<button id="${'btnSub' + el.id}"class="button semesterBtn">${el.name}</button>`
     }, '');
     $("#subjects__list").html(inner);
-    
 
     ids.forEach((el) => {
         $('#'+el.id).on('click', () => {
