@@ -156,13 +156,30 @@ def get_subject_data(request):
         for mark in marks:
             mark_data = {}
             student_ud = UserDetail.objects.get(user=mark.user)
-            
+
             mark_data["name"] = f"{student_ud.first_name} {student_ud.last_name[0]}.{student_ud.patronymic[0]}"
-            mark_data["id"] = student_ud.pk
+            mark_data["id"] = mark.user.pk
             mark_data["mark"] = mark.mark
 
             marks_list.append(mark_data)
         
         return JsonResponse({"marks": marks_list})
     
+    return HttpResponseNotAllowed("GET")
+
+
+def modify_mark(request):
+    if request.method == "POST":
+        subject_id = request.POST['subject_id']
+        student_id = request.POST['student_id']
+        mark = request.POST['mark']
+        
+        mark = Mark.objects.get(subject__pk=subject_id, user__pk=student_id)
+        try:
+            mark.mark = int(mark)
+            mark.save()
+        except Exception as e:
+            return JsonResponse({"exception": str(e)})
+        
+        return JsonResponse({"status": "OK"})
     return HttpResponseNotAllowed("GET")

@@ -34,4 +34,4 @@ class Subject(models.Model):
 class Mark(models.Model):
     user = models.ForeignKey(User, models.CASCADE, default=None)
     subject = models.ForeignKey(Subject, models.CASCADE, default=None)
-    mark = models.IntegerField(default=0)
+    mark = models.IntegerField(default=-1)
