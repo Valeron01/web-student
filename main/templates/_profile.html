@@ -1,21 +1,57 @@
-<div class="profile">
-    <div class="profile__user user">
-        <div class="user__info">
-            <h4>Информация о пользователе</h4>
-            <p class="user__role">Студент</p>
-            <p class="user__name">Чеботарев Артем Александрович</p>
-            <p class="user__email">geo.harri40@gmail.com</p>
-        </div>
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>Электронная зачетка</title>
+    
+</head>
+<body>
+    <div class="wrapper layout">
+        <header class="header">
+            <h1>Электронная зачетка</h1>
+            <nav class="header__nav">
+                <a href='/logout'>Выйти</a>
+            </nav>
+        </header>
+
+        <main class="main">
+            <div id="root">
+                <div class="profile">
+                    <div class="profile__user user">
+                        <div class="user__info">
+                            <h4>Информация о пользователе</h4>
+                            <p id="role" class="user__role"></p>
+                            <p id="name" class="user__name"></p>
+                            <p id="email" class="user__email"></p>
+                        </div>
+                    </div>
+                    <div class="profile__subjects subjects">
+                        <div class="subjects__chooser">
+                            <h4>Учебный семестр</h4>
+                            <ul id="subjects__list" class="subjects__list">
+                                
+                            </ul>
+                        </div>
+                        <div class="subjects__preview">
+                            <table id="table"></table>
+                            <div class="brnPlace"></div>   
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div>Проект выполнил студент 2 курса Рожнов Л.А.</div>
+            <div>ВГУ ФКН 2021</div>
+        </footer>
     </div>
-    <div class="profile__subjects subjects">
-        <div class="subjects__chooser">
-            <h4>Учебный семестр</h4>
-            <ul id="subjects__list" class="subjects__list">
-                
-            </ul>
-        </div>
-        <div class="subjects__preview">
-            <table id="table"></table>
-        </div>
-    </div>
-</div>
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script src='{% static "js/profile.js" %}'></script>
+</body>
+</html>

@@ -1,6 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+class Semester(models.Model):
+    name = models.CharField(max_length=20, default="Undefined_semester", unique=True)
+    def __str__(self):
+        return self.name
+
 class UserDetail(models.Model):
     user = models.ForeignKey(User, models.CASCADE, default=None)
     first_name = models.CharField(max_length=40)
@@ -10,28 +15,26 @@ class UserDetail(models.Model):
     is_teacher = models.BooleanField(default=False)
 
     def __str__(self):
-        detail = 'преподаватель' if is_teacher else student_code
-        return f'{first_name} {last_name} {patronymic}, {detail}'
+        detail = 'преподаватель' if self.is_teacher else '' # Student.objects.get(user=self.user).student_code
+        return f'{self.first_name} {self.patronymic} {self.last_name} {detail}'
 
 
     class Meta:
         verbose_name = 'Детальная информация'
         verbose_name_plural = 'Детальная информация'
 
-
-class Student(models.Model):
-    user = models.ForeignKey(User, models.CASCADE, default=None)
-    student_code = models.IntegerField(default=0)
-
-class Teacher(models.Model):
-    user = models.ForeignKey(User, models.CASCADE, default=None)
-
 class Subject(models.Model):
-    teacher = models.ForeignKey(Teacher, models.CASCADE, default=None)
-    name = models.CharField(max_length=40)
-    semester = models.IntegerField(default=-1)
+    user = models.ForeignKey(UserDetail, models.CASCADE, default=None)
+    name = models.CharField(max_length=40, unique=True)
+    semester = models.ForeignKey(Semester, models.CASCADE)
+
+    def __str__(self):
+        return f"{self.user}, {self.name}"
 
 class Mark(models.Model):
-    student = models.ForeignKey(Student, models.CASCADE, default=None)
+    user = models.ForeignKey(User, models.CASCADE, default=None)
     subject = models.ForeignKey(Subject, models.CASCADE, default=None)
-    mark = models.IntegerField(default=0)
+    mark = models.IntegerField(default=-1)
+
+    class Meta:
+        unique_together = [['user', 'subject']]

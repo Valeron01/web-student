@@ -173,3 +173,7 @@ html, body, .layout, #root {
     border-radius: 3px;
 }
 
+.saveBtn {
+    width: 90%;
+    margin: 0 12px;
+}
